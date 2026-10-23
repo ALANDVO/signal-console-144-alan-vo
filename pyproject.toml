@@ -1,0 +1,79 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "signal-console"
+version = "1.0.0"
+description = "Production-grade engineering skills platform for AI coding agents"
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.12"
+authors = [
+    {name = "Alan Vo", email = "alanvo@gmail.com"}
+]
+maintainers = [
+    {name = "Alan Vo", email = "alanvo@gmail.com"}
+]
+keywords = [
+    "ai",
+    "machine-learning",
+    "agent-skills",
+    "evaluation",
+    "drift-detection",
+    "fastapi",
+    "react"
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Scientific/Engineering :: Artificial Intelligence",
+    "Topic :: Software Development :: Testing"
+]
+dependencies = [
+    "fastapi==0.115.0",
+    "uvicorn[standard]==0.32.0",
+    "pydantic==2.9.2",
+    "pydantic-settings==2.6.1",
+    "sqlalchemy==2.0.35",
+    "alembic==1.13.3",
+    "aiosqlite==0.20.0",
+    "httpx==0.28.1",
+    "python-jose[cryptography]==3.3.0",
+    "python-multipart==0.0.12",
+    "python-dotenv==1.0.1",
+    "itsdangerous==2.2.0"
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest==8.3.4",
+    "pytest-asyncio==0.23.8",
+    "pytest-cov==6.0.0",
+    "httpx==0.28.1"
+]
+
+[tool.setuptools.packages.find]
+where = ["backend"]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["backend/tests"]
+pythonpath = ["backend"]
+asyncio_mode = "auto"
+addopts = "-v --tb=short"
+
+[tool.coverage.run]
+source = ["backend/app"]
+omit = ["backend/tests/*", "backend/app/main.py"]
+
+[tool.coverage.report]
+exclude_lines = [
+    "pragma: no cover",
+    "def __repr__",
+    "raise AssertionError",
+    "raise NotImplementedError",
+    "if __name__ == .__main__.:"
+]
