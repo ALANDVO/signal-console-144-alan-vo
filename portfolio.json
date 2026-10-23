@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "name": "signal-console-144-alan-vo",
+  "owner": "ALANDVO",
+  "email": "alanvo@gmail.com",
+  "domain": "AI/ML developer tools",
+  "summary": "Work in progress: signal-console-144-alan-vo",
+  "workflows": [
+    "Register and version agent skills with JSON schemas",
+    "Run reproducible skill evaluations with configurable sample sizes and multi-provider LLM support",
+    "Detect performance drift across model releases using statistical significance testing"
+  ],
+  "auth": "oidc-keycloak-saml-broker",
+  "llm_providers": [
+    "openai-compatible",
+    "anthropic",
+    "gemini",
+    "ollama"
+  ],
+  "status": "work-in-progress"
+}
