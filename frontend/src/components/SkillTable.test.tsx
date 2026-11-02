@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/react';
+import { render, screen } from '@testing-library/react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { BrowserRouter } from 'react-router-dom';
 import { SkillTable } from './SkillTable';
 import { api } from '../api/client';
+import type { Mock } from 'vitest';
 
 vi.mock('../api/client', () => ({
   api: {
@@ -36,10 +37,21 @@ describe('SkillTable', () => {
   });
 
   it('renders loading state', async () => {
-    api.getSkills.mockResolvedValueOnce(new Promise(() => {}));
+    const resolveRef = { current: null as ((value: any) => void) | null };
+    const loadingPromise = new Promise((res) => { resolveRef.current = res; });
+    (api.getSkills as Mock).mockReturnValueOnce(loadingPromise);
     
     render(<SkillTable />, { wrapper });
     expect(screen.getByRole('status')).toBeInTheDocument();
+    
+    resolveRef.current!({
+      items: [],
+      total: 0,
+      page: 1,
+      page_size: 20,
+      total_pages: 1,
+    });
+    await loadingPromise;
   });
 
   it('renders skills list', async () => {
@@ -53,7 +65,7 @@ describe('SkillTable', () => {
       total_pages: 1,
     };
     
-    api.getSkills.mockResolvedValueOnce(mockSkills);
+    (api.getSkills as Mock).mockResolvedValueOnce(mockSkills);
     
     render(<SkillTable />, { wrapper });
     
@@ -71,7 +83,7 @@ describe('SkillTable', () => {
       total_pages: 1,
     };
     
-    api.getSkills.mockResolvedValueOnce(mockSkills);
+    (api.getSkills as Mock).mockResolvedValueOnce(mockSkills);
     
     render(<SkillTable />, { wrapper });
     
