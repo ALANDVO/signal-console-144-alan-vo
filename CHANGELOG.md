@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.1.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.0.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
@@ -43,6 +47,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Deterministic offline core (works without LLM keys)
 
 ## [Unreleased]
+
+### Fixed
+- SkillTable component loading state accessibility (added `role="status"` and `aria-live="polite"`)
+- SkillTable tests - loading state, skills list and empty state tests now properly resolve mocked API responses
+- TypeScript build errors in test file (mock typing, Promise pattern compatibility)
+
+### Verified
+- All 41 backend tests pass
+- All 3 frontend tests pass
+- Frontend production build succeeds
 
 ### Planned
 - Automated evaluation scheduler

@@ -45,7 +45,7 @@ export function SkillTable({ onEdit, onDelete }: SkillTableProps) {
   };
 
   if (isLoading && !data) {
-    return <div className="loading"><div className="spinner" /></div>;
+    return <div className="loading" role="status" aria-live="polite"><div className="spinner" /></div>;
   }
 
   if (error) {
