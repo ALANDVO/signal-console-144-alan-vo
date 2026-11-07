@@ -54,3 +54,6 @@ Acceptance:
 - Bounded timeouts and redacted error handling
 - Server-side only credential handling
 
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)

@@ -70,3 +70,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Integration with Driftproof evaluation suites
 - Prometheus metrics export
 - PostgreSQL production database support
+
+---
+
+Alan Vo · [alanvo.net](https://alanvo.net)
