@@ -14,7 +14,7 @@ async def create_skill(session: AsyncSession, skill_data: SkillCreate) -> Skill:
     if existing.scalar_one_or_none():
         raise ConflictError(f"Skill with name '{skill_data.name}' already exists")
 
-    skill = Skill(**skill_data.model_dump())
+    skill = Skill(**skill_data.model_dump(by_alias=True))
     session.add(skill)
     await session.flush()
     await session.refresh(skill)
@@ -71,7 +71,7 @@ async def list_skills(
 async def update_skill(session: AsyncSession, skill_id: int, skill_data: SkillUpdate) -> Skill:
     skill = await get_skill(session, skill_id)
     
-    update_data = skill_data.model_dump(exclude_unset=True)
+    update_data = skill_data.model_dump(exclude_unset=True, by_alias=True)
     for field, value in update_data.items():
         setattr(skill, field, value)
     

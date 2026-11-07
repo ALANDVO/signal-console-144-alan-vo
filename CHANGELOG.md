@@ -1,5 +1,9 @@
 # Changelog
 
+## 1.2.0 — work-in-progress checkpoint
+
+Partial code published for continued development. Known issues: STATUS.md.
+
 ## 1.1.0 — work-in-progress checkpoint
 
 Partial code published for continued development. Known issues: STATUS.md.
@@ -49,9 +53,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [Unreleased]
 
 ### Fixed
-- SkillTable component loading state accessibility (added `role="status"` and `aria-live="polite"`)
-- SkillTable tests - loading state, skills list and empty state tests now properly resolve mocked API responses
-- TypeScript build errors in test file (mock typing, Promise pattern compatibility)
+- Pydantic field name conflicts in Skill and Evaluation schemas (shadowing BaseModel methods `schema_json`, `model_name`, `model_version`)
+- Backend services now use `model_dump(by_alias=True)` to correctly map API field aliases to database columns
+- All 41 backend tests pass without Pydantic warnings about field name conflicts
 
 ### Verified
 - All 41 backend tests pass
