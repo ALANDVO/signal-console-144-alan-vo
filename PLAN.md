@@ -26,13 +26,17 @@ Tests: `backend/tests/test_api.py`, `backend/tests/test_auth.py`, `backend/tests
 
 ### skill-evaluation-engine — Substantive domain engine for AI agent skill evaluation
 
-Status: planned
+Status: in_progress
 
 Acceptance:
 - Skill registry with schema validation
 - Evaluation runner with reproducible baselines
 - Drift detection across model versions
 - Confidence intervals and statistical reporting
+
+Implementation: `backend/app/services/evaluation_runner.py`, `backend/app/services/llm_adapters.py`, `backend/app/api/routes/skills.py (run evaluation endpoint)`
+
+Tests: `backend/tests/test_api.py::TestEvaluations::test_run_evaluation`
 
 ### auth-and-sso — OIDC authentication with Keycloak and SAML broker
 
@@ -46,13 +50,15 @@ Acceptance:
 
 ### llm-adapters — Multi-provider LLM adapter layer
 
-Status: planned
+Status: in_progress
 
 Acceptance:
 - OpenAI-compatible, Anthropic, Gemini, Ollama adapters
 - Configurable provider/model/endpoint via environment
 - Bounded timeouts and redacted error handling
 - Server-side only credential handling
+
+Implementation: `backend/app/services/llm_adapters.py`
 
 ---
 

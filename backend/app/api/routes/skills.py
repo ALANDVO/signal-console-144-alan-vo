@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, Query, HTTPException, status, Request
+from fastapi import APIRouter, Depends, Query, HTTPException, status, Request, BackgroundTasks
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 
@@ -15,6 +15,7 @@ from app.services import (
     get_evaluation,
     list_evaluations,
     update_evaluation_status,
+    run_evaluation_background,
 )
 from app.api.schemas import (
     SkillCreate,
@@ -150,5 +151,34 @@ async def get_evaluation_endpoint(
     db: AsyncSession = Depends(get_db_session),
     user_id: str = Depends(require_user),
 ) -> EvaluationResponse:
+    evaluation = await get_evaluation(db, eval_id)
+    return EvaluationResponse.model_validate(evaluation)
+
+
+@router.post("/evaluations/{eval_id}/run", response_model=EvaluationResponse)
+async def run_evaluation_endpoint(
+    eval_id: int,
+    background_tasks: BackgroundTasks,
+    db: AsyncSession = Depends(get_db_session),
+    user_id: str = Depends(require_role(["admin", "operator", "analyst"])),
+    request: Request = None,
+) -> EvaluationResponse:
+    """Trigger an evaluation to run in the background."""
+    evaluation = await get_evaluation(db, eval_id)
+    
+    if evaluation.status not in ("pending", "failed"):
+        raise HTTPException(
+            status_code=400,
+            detail=f"Cannot run evaluation with status '{evaluation.status}'. Only 'pending' or 'failed' evaluations can be run.",
+        )
+    
+    # Run evaluation in background
+    background_tasks.add_task(run_evaluation_background, eval_id)
+    
+    # Update status to running immediately
+    await update_evaluation_status(db, eval_id, "running")
+    await log_audit(db, user_id, "run", "evaluation", str(eval_id), {}, request)
+    
+    # Refresh and return updated evaluation
     evaluation = await get_evaluation(db, eval_id)
     return EvaluationResponse.model_validate(evaluation)

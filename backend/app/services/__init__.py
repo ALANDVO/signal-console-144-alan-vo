@@ -7,6 +7,8 @@ from sqlalchemy.orm import selectinload
 from app.models import Skill, Evaluation, DriftReport, AuditLog
 from app.api.schemas import SkillCreate, SkillUpdate, EvaluationCreate
 from app.core.exceptions import NotFoundError, ConflictError
+from app.services.llm_adapters import LLMAdapter, get_llm_adapter
+from app.services.evaluation_runner import EvaluationRunner, run_evaluation_background, EvaluationSummary
 
 
 async def create_skill(session: AsyncSession, skill_data: SkillCreate) -> Skill:
