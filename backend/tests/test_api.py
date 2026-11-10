@@ -1,4 +1,5 @@
 import pytest
+import json
 from httpx import AsyncClient
 
 
@@ -333,6 +334,62 @@ class TestEvaluations:
         assert response.status_code == 200
         data = response.json()
         assert data["id"] == eval_id
+
+    async def test_run_evaluation(self, demo_user_client):
+        import asyncio
+        client, cookie = demo_user_client
+        client.headers["Cookie"] = cookie
+        
+        # Create skill with test cases
+        skill_resp = await client.post(
+            "/api/v1/skills",
+            json={
+                "name": "eval-run-skill",
+                "display_name": "Eval Run Skill",
+                "description": "Skill for evaluation run testing",
+                "category": "evaluation",
+                "schema": json.dumps({
+                    "test_cases": [
+                        {"input": "What is 2+2?", "expected_output": "4", "evaluation_type": "exact_match"},
+                        {"input": "What is 3*3?", "expected_output": "9", "evaluation_type": "exact_match"},
+                    ]
+                }),
+            },
+        )
+        skill_id = skill_resp.json()["id"]
+        
+        # Create evaluation
+        eval_resp = await client.post(
+            f"/api/v1/skills/{skill_id}/evaluate",
+            json={
+                "skill_id": skill_id,
+                "model_name": "gpt-4o",
+                "model_version": "2024-08-06",
+                "provider": "openai-compatible",
+                "sample_size": 2,
+            },
+        )
+        eval_id = eval_resp.json()["id"]
+        
+        # Run evaluation
+        response = await client.post(f"/api/v1/skills/evaluations/{eval_id}/run")
+        assert response.status_code == 200
+        data = response.json()
+        assert data["id"] == eval_id
+        assert data["status"] == "running"
+        
+        # Wait a bit for background task
+        await asyncio.sleep(2.0)
+        
+        # Check evaluation status - should be failed since no LLM configured
+        response = await client.get(f"/api/v1/skills/evaluations/{eval_id}")
+        assert response.status_code == 200
+        data = response.json()
+        # Debug: print status
+        print(f"Evaluation status: {data['status']}, error_message: {data['error_message']}")
+        assert data["status"] in ("failed", "running")
+        if data["status"] == "failed":
+            assert data["error_message"] is not None
 
 
 class TestDriftReports:

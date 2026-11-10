@@ -73,15 +73,21 @@
     {
       "id": "skill-evaluation-engine",
       "title": "Substantive domain engine for AI agent skill evaluation",
-      "status": "planned",
+      "status": "in_progress",
       "acceptance": [
         "Skill registry with schema validation",
         "Evaluation runner with reproducible baselines",
         "Drift detection across model versions",
         "Confidence intervals and statistical reporting"
       ],
-      "implementation": [],
-      "tests": []
+      "implementation": [
+        "backend/app/services/evaluation_runner.py",
+        "backend/app/services/llm_adapters.py",
+        "backend/app/api/routes/skills.py (run evaluation endpoint)"
+      ],
+      "tests": [
+        "backend/tests/test_api.py::TestEvaluations::test_run_evaluation"
+      ]
     },
     {
       "id": "auth-and-sso",
@@ -99,14 +105,16 @@
     {
       "id": "llm-adapters",
       "title": "Multi-provider LLM adapter layer",
-      "status": "planned",
+      "status": "in_progress",
       "acceptance": [
         "OpenAI-compatible, Anthropic, Gemini, Ollama adapters",
         "Configurable provider/model/endpoint via environment",
         "Bounded timeouts and redacted error handling",
         "Server-side only credential handling"
       ],
-      "implementation": [],
+      "implementation": [
+        "backend/app/services/llm_adapters.py"
+      ],
       "tests": []
     }
   ]
