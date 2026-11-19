@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "signal-console"
-version = "1.0.0"
+version = "1.4.0"
 description = "Production-grade engineering skills platform for AI coding agents"
 readme = "README.md"
 license = {text = "MIT"}

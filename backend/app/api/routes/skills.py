@@ -1,4 +1,5 @@
 from fastapi import APIRouter, Depends, Query, HTTPException, status, Request, BackgroundTasks
+import json
 from sqlalchemy.ext.asyncio import AsyncSession
 from typing import List, Optional
 
@@ -80,6 +81,17 @@ async def create_skill_endpoint(
     user_id: str = Depends(require_role(["admin", "operator"])),
     request: Request = None,
 ) -> SkillResponse:
+    # Validate skill schema is valid JSON
+    if skill_data.json_schema:
+        try:
+            import json
+            json.loads(skill_data.json_schema)
+        except (json.JSONDecodeError, ValueError) as e:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Skill schema is not valid JSON: {e}"
+            )
+    
     skill = await create_skill(db, skill_data)
     await log_audit(db, user_id, "create", "skill", str(skill.id), {"name": skill.name}, request)
     return SkillResponse.model_validate(skill)
@@ -93,6 +105,17 @@ async def update_skill_endpoint(
     user_id: str = Depends(require_role(["admin", "operator"])),
     request: Request = None,
 ) -> SkillResponse:
+    # Validate skill schema if being updated
+    if skill_data.json_schema is not None:
+        try:
+            import json
+            json.loads(skill_data.json_schema)
+        except (json.JSONDecodeError, ValueError) as e:
+            raise HTTPException(
+                status_code=422,
+                detail=f"Skill schema is not valid JSON: {e}"
+            )
+    
     skill = await update_skill(db, skill_id, skill_data)
     await log_audit(db, user_id, "update", "skill", str(skill_id), skill_data.model_dump(exclude_unset=True), request)
     return SkillResponse.model_validate(skill)
