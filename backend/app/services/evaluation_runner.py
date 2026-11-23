@@ -82,31 +82,25 @@ class EvaluationRunner:
                 "failed",
                 error_message="No LLM provider configured. Set LLM_API_KEY and LLM_PROVIDER environment variables.",
             )
-            raise RuntimeError("No LLM provider configured")
 
         # Parse skill schema for test cases
         try:
             skill_schema = json.loads(skill.schema)
         except json.JSONDecodeError:
-            from app.services import update_evaluation_status
             await update_evaluation_status(
                 session,
                 evaluation_id,
                 "failed",
                 error_message="Invalid skill schema JSON",
             )
-            raise RuntimeError("Invalid skill schema JSON")
 
-        test_cases = skill_schema.get("test_cases", [])
         if not test_cases:
             from app.services import update_evaluation_status
             await update_evaluation_status(
                 session,
                 evaluation_id,
                 "failed",
-                error_message="Skill schema missing test_cases array",
             )
-            raise RuntimeError("Skill schema missing test_cases array")
 
         # Determine actual sample size
         n_trials = sample_size or evaluation.sample_size
@@ -311,6 +305,7 @@ async def run_evaluation_background(
         try:
             await runner.run_evaluation(session, evaluation_id)
         except Exception:
-            # Error already handled in run_evaluation
             pass
+        finally:
+            await session.commit()
 
