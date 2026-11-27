@@ -82,6 +82,7 @@ class EvaluationRunner:
                 "failed",
                 error_message="No LLM provider configured. Set LLM_API_KEY and LLM_PROVIDER environment variables.",
             )
+            return
 
         # Parse skill schema for test cases
         try:
